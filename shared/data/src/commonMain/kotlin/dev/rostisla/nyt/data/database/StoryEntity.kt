@@ -14,7 +14,7 @@ internal const val STORY_PUBLISHED_DATE = "published_date"
 internal class StoryEntity(
     @ColumnInfo(name = STORY_ID)
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     @ColumnInfo(name = STORY_TITLE)
     val title: String,
     @ColumnInfo(name = STORY_ABSTRACT)

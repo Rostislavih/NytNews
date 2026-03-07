@@ -11,6 +11,9 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
@@ -23,20 +26,39 @@ internal class StoriesViewModel(private val repository: StoriesRepository) : Vie
 
     fun onStart() {
         if (!isStarted) {
-            fetchStories()
+            observeStories()
+            refreshStories()
         }
         isStarted = true
     }
 
-    private fun fetchStories() {
+    private fun observeStories() {
+        // Подписываемся на поток данных из БД. 
+        // Любое изменение в БД (например, после fetchStories) автоматически обновит UI.
+        repository.getStories(StoriesSection.HOME)
+            .onEach { stories ->
+                if (stories.isNotEmpty()) {
+                    updateState { StoriesState.Success(stories.map { it.toUiStory() }) }
+                }
+            }
+            .catch { error ->
+                updateState { StoriesState.Error(error.message.orEmpty()) }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun refreshStories() {
         launch {
-            updateState { StoriesState.Loading }
             try {
-                val stories = repository.fetchStories(StoriesSection.HOME)
-                updateState { StoriesState.Success(stories.map { it.toUiStory() }) }
+                // Загружаем данные из сети. Они будут сохранены в БД, 
+                // и observeStories() увидит эти изменения.
+                repository.fetchStories(StoriesSection.HOME)
             } catch (error: Exception) {
                 ensureActive()
-                updateState { StoriesState.Error(error.message.orEmpty()) }
+                // Если база пуста и произошла ошибка сети, показываем экран ошибки.
+                if (state.value is StoriesState.Loading) {
+                    updateState { StoriesState.Error(error.message.orEmpty()) }
+                }
             }
         }
     }
