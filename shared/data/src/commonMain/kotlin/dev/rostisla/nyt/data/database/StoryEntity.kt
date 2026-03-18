@@ -9,6 +9,7 @@ internal const val STORY_ID = "id"
 internal const val STORY_TITLE = "title"
 internal const val STORY_ABSTRACT = "abstract"
 internal const val STORY_PUBLISHED_DATE = "published_date"
+internal const val STORY_SECTION = "section"
 
 @Entity(tableName = STORY_TABLE_NAME)
 internal class StoryEntity(
@@ -21,4 +22,6 @@ internal class StoryEntity(
     val abstract: String,
     @ColumnInfo(name = STORY_PUBLISHED_DATE)
     val publishedDate: String,
+    @ColumnInfo(name = STORY_SECTION)
+    val section: String,
 )

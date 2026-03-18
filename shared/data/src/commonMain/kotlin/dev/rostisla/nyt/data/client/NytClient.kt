@@ -6,11 +6,12 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.util.appendIfNameAndValueAbsent
 import kotlinx.serialization.json.Json
 
+// Используем полный ключ, который был в вашем первом сообщении.
+// Если ошибка "Invalid ApiKey for given resource" сохраняется, 
+// проверьте, что в кабинете разработчика NYT для этого ключа включен "Books API".
 private const val API_KEY = "REDACTED_NYT_API_KEY"
 
 val nytClient: () -> HttpClient = {
@@ -20,7 +21,7 @@ val nytClient: () -> HttpClient = {
             level = LogLevel.ALL
         }
         install(HttpTimeout) {
-            val timeout = 5000L
+            val timeout = 15000L
             connectTimeoutMillis = timeout
             requestTimeoutMillis = timeout
             socketTimeoutMillis = timeout
@@ -29,12 +30,13 @@ val nytClient: () -> HttpClient = {
             json(
                 Json {
                     ignoreUnknownKeys = true
+                    coerceInputValues = true
                 }
             )
         }
         defaultRequest {
-            url("https://api.nytimes.com/svc/topstories/v2/")
-            url.parameters.appendIfNameAndValueAbsent("api-key", API_KEY)
+            url("https://api.nytimes.com/svc/")
+            url.parameters.append("api-key", API_KEY)
         }
     }
 }

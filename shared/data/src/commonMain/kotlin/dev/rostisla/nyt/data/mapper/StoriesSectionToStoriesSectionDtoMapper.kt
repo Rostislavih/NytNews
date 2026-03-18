@@ -8,6 +8,6 @@ internal fun StoriesSection.toStoriesSectionDto(): StoriesSectionDto {
         StoriesSection.HOME -> StoriesSectionDto.HOME
         StoriesSection.ARTS -> StoriesSectionDto.ARTS
         StoriesSection.AUTOMOBILES -> StoriesSectionDto.AUTOMOBILES
-        StoriesSection.BOOKS_REVIEW -> StoriesSectionDto.BOOKS_REVIEW
+        StoriesSection.BOOKS -> StoriesSectionDto.BOOKS
     }
 }

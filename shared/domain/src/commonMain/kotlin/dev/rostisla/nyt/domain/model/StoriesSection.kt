@@ -4,5 +4,5 @@ enum class StoriesSection {
     HOME,
     ARTS,
     AUTOMOBILES,
-    BOOKS_REVIEW
+    BOOKS
 }

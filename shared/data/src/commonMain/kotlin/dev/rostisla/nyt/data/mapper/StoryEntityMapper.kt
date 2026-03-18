@@ -13,11 +13,11 @@ internal fun StoryEntity.toStory(): Story {
 }
 
 internal fun Story.toEntity(section: StoriesSection): StoryEntity {
-        return StoryEntity(
-            id = 0,
-            title = this.title,
-            abstract = this.abstract,
-            publishedDate = this.publishedDate,
-
-        )
+    return StoryEntity(
+        id = 0,
+        title = this.title,
+        abstract = this.abstract,
+        publishedDate = this.publishedDate,
+        section = section.name
+    )
 }

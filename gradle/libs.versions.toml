@@ -2,7 +2,7 @@
 minSdk = "24"
 compileSdk = "36"
 
-agp = "8.11.2"
+agp = "8.13.2"
 android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"

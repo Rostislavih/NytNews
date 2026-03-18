@@ -1,19 +1,23 @@
 package dev.rostisla.nyt.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -27,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleStartEffect
+import dev.rostisla.nyt.domain.model.StoriesSection
 import dev.rostisla.nyt.presentation.model.UiStory
 import dev.rostisla.nyt.presentation.state.StoriesState
 import news.shared.presentation.generated.resources.Res
@@ -42,19 +47,35 @@ fun StoriesScreen(modifier: Modifier = Modifier) {
         onStopOrDispose { }
     }
     val state = viewModel.state.collectAsState()
-    StoriesScreenContent(modifier = modifier, screenState = state)
+    val currentSection by viewModel.currentSection.collectAsState()
+
+    StoriesScreenContent(
+        modifier = modifier,
+        screenState = state,
+        currentSection = currentSection,
+        onSectionSelected = viewModel::updateSection
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StoriesScreenContent(
     screenState: State<StoriesState>,
+    currentSection: StoriesSection,
+    onSectionSelected: (StoriesSection) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(title = { Text(text = stringResource(Res.string.screen_title)) })
+            Column {
+                TopAppBar(title = { Text(text = stringResource(Res.string.screen_title)) })
+                SectionSelector(
+                    selectedSection = currentSection,
+                    onSectionSelected = onSectionSelected,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     ) { paddingValues ->
         val state by screenState
@@ -72,6 +93,35 @@ private fun StoriesScreenContent(
                 modifier = Modifier.fillMaxSize().padding(paddingValues),
                 state = currentState,
             )
+        }
+    }
+}
+
+@Composable
+private fun SectionSelector(
+    selectedSection: StoriesSection,
+    onSectionSelected: (StoriesSection) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyRow(
+        modifier = modifier,
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(StoriesSection.entries) { section ->
+            val isSelected = section == selectedSection
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier.clickable { onSectionSelected(section) }
+            ) {
+                Text(
+                    text = section.name,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }
@@ -131,6 +181,8 @@ private fun StoryCard(story: UiStory, modifier: Modifier = Modifier) {
 private fun StoriesScreenPreview() {
     MaterialTheme {
         StoriesScreenContent(
+            currentSection = StoriesSection.HOME,
+            onSectionSelected = {},
             screenState = mutableStateOf(
                 StoriesState.Success(
                     stories = listOf(

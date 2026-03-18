@@ -6,7 +6,7 @@ import dev.rostisla.nyt.domain.model.StoriesSection
 import dev.rostisla.nyt.domain.repository.StoriesRepository
 import dev.rostisla.nyt.presentation.mapper.toUiStory
 import dev.rostisla.nyt.presentation.state.StoriesState
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,26 +16,30 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
-internal class StoriesViewModel(private val repository: StoriesRepository) : ViewModel(), CoroutineScope {
-    override val coroutineContext: CoroutineContext = viewModelScope.coroutineContext
+internal class StoriesViewModel(private val repository: StoriesRepository) : ViewModel() {
     private val _state: MutableStateFlow<StoriesState> = MutableStateFlow(StoriesState.Loading)
     val state: StateFlow<StoriesState> = _state.asStateFlow()
+
+    private val _currentSection = MutableStateFlow(StoriesSection.HOME)
+    val currentSection: StateFlow<StoriesSection> = _currentSection.asStateFlow()
+
+    private var observeJob: Job? = null
     private var isStarted: Boolean = false
 
     fun onStart() {
         if (!isStarted) {
-            observeStories()
-            refreshStories()
+            updateSection(StoriesSection.HOME)
+            isStarted = true
         }
-        isStarted = true
     }
 
-    private fun observeStories() {
-        // Подписываемся на поток данных из БД. 
-        // Любое изменение в БД (например, после fetchStories) автоматически обновит UI.
-        repository.getStories(StoriesSection.HOME)
+    fun updateSection(section: StoriesSection) {
+        _currentSection.value = section
+        _state.value = StoriesState.Loading
+        
+        observeJob?.cancel()
+        observeJob = repository.getStories(section)
             .onEach { stories ->
                 if (stories.isNotEmpty()) {
                     updateState { StoriesState.Success(stories.map { it.toUiStory() }) }
@@ -45,17 +49,16 @@ internal class StoriesViewModel(private val repository: StoriesRepository) : Vie
                 updateState { StoriesState.Error(error.message.orEmpty()) }
             }
             .launchIn(viewModelScope)
+
+        refreshStories(section)
     }
 
-    private fun refreshStories() {
-        launch {
+    private fun refreshStories(section: StoriesSection) {
+        viewModelScope.launch {
             try {
-                // Загружаем данные из сети. Они будут сохранены в БД, 
-                // и observeStories() увидит эти изменения.
-                repository.fetchStories(StoriesSection.HOME)
+                repository.fetchStories(section)
             } catch (error: Exception) {
                 ensureActive()
-                // Если база пуста и произошла ошибка сети, показываем экран ошибки.
                 if (state.value is StoriesState.Loading) {
                     updateState { StoriesState.Error(error.message.orEmpty()) }
                 }
