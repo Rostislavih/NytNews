@@ -32,6 +32,9 @@ kotlin {
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
                 implementation(libs.kotlinx.coroutines.core)
+                
+                implementation(libs.coil.compose)
+                implementation(libs.coil.ktor3)
 
                 implementation(projects.shared.domain)
             }

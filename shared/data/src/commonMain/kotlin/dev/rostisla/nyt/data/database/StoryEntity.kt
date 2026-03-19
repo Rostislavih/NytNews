@@ -10,6 +10,7 @@ internal const val STORY_TITLE = "title"
 internal const val STORY_ABSTRACT = "abstract"
 internal const val STORY_PUBLISHED_DATE = "published_date"
 internal const val STORY_SECTION = "section"
+internal const val STORY_IMAGE_URL = "image_url"
 
 @Entity(tableName = STORY_TABLE_NAME)
 internal class StoryEntity(
@@ -24,4 +25,6 @@ internal class StoryEntity(
     val publishedDate: String,
     @ColumnInfo(name = STORY_SECTION)
     val section: String,
+    @ColumnInfo(name = STORY_IMAGE_URL)
+    val imageUrl: String? = null
 )

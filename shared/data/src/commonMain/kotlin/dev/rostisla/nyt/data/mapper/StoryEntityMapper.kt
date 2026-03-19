@@ -9,6 +9,7 @@ internal fun StoryEntity.toStory(): Story {
         title = this.title,
         abstract = this.abstract,
         publishedDate = this.publishedDate,
+        imageUrl = this.imageUrl
     )
 }
 
@@ -18,6 +19,7 @@ internal fun Story.toEntity(section: StoriesSection): StoryEntity {
         title = this.title,
         abstract = this.abstract,
         publishedDate = this.publishedDate,
-        section = section.name
+        section = section.name,
+        imageUrl = this.imageUrl
     )
 }

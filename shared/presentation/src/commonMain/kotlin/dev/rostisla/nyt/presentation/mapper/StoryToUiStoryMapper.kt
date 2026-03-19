@@ -8,5 +8,6 @@ internal fun Story.toUiStory(): UiStory {
         title = title,
         abstract = abstract,
         publishedDate = publishedDate,
+        imageUrl = imageUrl
     )
 }
