@@ -1,9 +1,13 @@
+import java.util.Properties
+import com.codingfeline.buildkonfig.compiler.FieldSpec
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.androidx.room)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.buildkonfig)
 }
 
 kotlin {
@@ -43,6 +47,22 @@ kotlin {
                 implementation(libs.ktor.client.darwin)
             }
         }
+    }
+}
+
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { load(it) }
+    }
+}
+
+buildkonfig {
+    packageName = "dev.rostisla.nyt.data"
+    objectName = "NytConfig"
+
+    defaultConfigs {
+        buildConfigField(FieldSpec.Type.STRING, "API_KEY", localProperties.getProperty("nyt.api.key") ?: "")
     }
 }
 
