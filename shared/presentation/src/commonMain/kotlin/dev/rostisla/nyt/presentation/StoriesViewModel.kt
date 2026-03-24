@@ -21,6 +21,9 @@ internal class StoriesViewModel(private val repository: StoriesRepository) : Vie
     private val _state: MutableStateFlow<StoriesState> = MutableStateFlow(StoriesState.Loading)
     val state: StateFlow<StoriesState> = _state.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     private val _currentSection = MutableStateFlow(StoriesSection.HOME)
     val currentSection: StateFlow<StoriesSection> = _currentSection.asStateFlow()
 
@@ -53,8 +56,13 @@ internal class StoriesViewModel(private val repository: StoriesRepository) : Vie
         refreshStories(section)
     }
 
+    fun onRefresh() {
+        refreshStories(currentSection.value)
+    }
+
     private fun refreshStories(section: StoriesSection) {
         viewModelScope.launch {
+            _isRefreshing.value = true
             try {
                 repository.fetchStories(section)
             } catch (error: Exception) {
@@ -62,6 +70,8 @@ internal class StoriesViewModel(private val repository: StoriesRepository) : Vie
                 if (state.value is StoriesState.Loading) {
                     updateState { StoriesState.Error(error.message.orEmpty()) }
                 }
+            } finally {
+                _isRefreshing.value = false
             }
         }
     }

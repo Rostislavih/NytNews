@@ -8,7 +8,7 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
-@Database(entities = [StoryEntity::class], version = 1)
+@Database(entities = [StoryEntity::class], version = 2)
 @ConstructedBy(NytDatabaseConstructor::class)
 internal abstract class NytDatabase : RoomDatabase() {
     abstract fun storyDao(): StoryDao
@@ -25,5 +25,6 @@ internal fun getRoomDatabase(
     return builder
         .setDriver(BundledSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
+        .fallbackToDestructiveMigration(dropAllTables = true)
         .build()
 }

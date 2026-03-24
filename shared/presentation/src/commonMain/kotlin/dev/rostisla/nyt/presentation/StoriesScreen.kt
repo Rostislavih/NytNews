@@ -22,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -52,13 +53,16 @@ fun StoriesScreen(modifier: Modifier = Modifier) {
         onStopOrDispose { }
     }
     val state = viewModel.state.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
     val currentSection by viewModel.currentSection.collectAsState()
 
     StoriesScreenContent(
         modifier = modifier,
         screenState = state,
+        isRefreshing = isRefreshing,
         currentSection = currentSection,
-        onSectionSelected = viewModel::updateSection
+        onSectionSelected = viewModel::updateSection,
+        onRefresh = viewModel::onRefresh
     )
 }
 
@@ -66,8 +70,10 @@ fun StoriesScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun StoriesScreenContent(
     screenState: State<StoriesState>,
+    isRefreshing: Boolean,
     currentSection: StoriesSection,
     onSectionSelected: (StoriesSection) -> Unit,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -83,21 +89,27 @@ private fun StoriesScreenContent(
             }
         }
     ) { paddingValues ->
-        val state by screenState
-        when (val currentState = state) {
-            is StoriesState.Error -> ErrorContent(
-                state = currentState,
-                modifier = Modifier.fillMaxSize().padding(paddingValues)
-            )
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            modifier = Modifier.fillMaxSize().padding(paddingValues)
+        ) {
+            val state by screenState
+            when (val currentState = state) {
+                is StoriesState.Error -> ErrorContent(
+                    state = currentState,
+                    modifier = Modifier.fillMaxSize()
+                )
 
-            StoriesState.Loading -> LoadingContent(
-                modifier = Modifier.fillMaxSize().padding(paddingValues)
-            )
+                StoriesState.Loading -> LoadingContent(
+                    modifier = Modifier.fillMaxSize()
+                )
 
-            is StoriesState.Success -> SuccessContent(
-                modifier = Modifier.fillMaxSize().padding(paddingValues),
-                state = currentState,
-            )
+                is StoriesState.Success -> SuccessContent(
+                    modifier = Modifier.fillMaxSize(),
+                    state = currentState,
+                )
+            }
         }
     }
 }
@@ -220,6 +232,8 @@ private fun StoriesScreenPreview() {
         StoriesScreenContent(
             currentSection = StoriesSection.HOME,
             onSectionSelected = {},
+            isRefreshing = false,
+            onRefresh = {},
             screenState = mutableStateOf(
                 StoriesState.Success(
                     stories = listOf(
