@@ -225,31 +225,3 @@ private fun StoryCard(story: UiStory, modifier: Modifier = Modifier) {
     }
 }
 
-@Preview
-@Composable
-private fun StoriesScreenPreview() {
-    MaterialTheme {
-        StoriesScreenContent(
-            currentSection = StoriesSection.HOME,
-            onSectionSelected = {},
-            isRefreshing = false,
-            onRefresh = {},
-            screenState = mutableStateOf(
-                StoriesState.Success(
-                    stories = listOf(
-                        UiStory(
-                            title = "Title 1",
-                            abstract = "Abstract 1",
-                            publishedDate = "12.12.2023"
-                        ),
-                        UiStory(
-                            title = "Title 2",
-                            abstract = "Abstract 2",
-                            publishedDate = "12.12.2023"
-                        )
-                    )
-                )
-            )
-        )
-    }
-}
