@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal class NytStoryDto(
+    @SerialName("url") val url: String,
     @SerialName("title") val title: String,
     @SerialName("abstract") val abstract: String,
     @SerialName("published_date") val publishedDate: String,

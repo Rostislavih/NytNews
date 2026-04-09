@@ -8,6 +8,7 @@ internal fun NytStoryDto.toStory(): Story {
         ?: multimedia?.firstOrNull()?.url
 
     return Story(
+        url = this.url,
         title = this.title,
         abstract = this.abstract,
         publishedDate = this.publishedDate,

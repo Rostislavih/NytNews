@@ -11,14 +11,11 @@ internal interface StoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(story: List<StoryEntity>)
 
-    @Query("SELECT * FROM $STORY_TABLE_NAME WHERE $STORY_SECTION = :section")
-    suspend fun getAllBySection(section: String): List<StoryEntity>
-
-    @Query("SELECT * FROM $STORY_TABLE_NAME WHERE $STORY_SECTION = :section")
+    @Query("SELECT * FROM $STORY_TABLE_NAME WHERE $STORY_SECTION = :section ORDER BY $STORY_PUBLISHED_DATE DESC")
     fun getAllAsFlowBySection(section: String): Flow<List<StoryEntity>>
 
-    @Query("DELETE FROM $STORY_TABLE_NAME WHERE $STORY_SECTION = :section")
-    suspend fun clearBySection(section: String)
+    @Query("SELECT * FROM $STORY_TABLE_NAME WHERE $STORY_SECTION = :section")
+    suspend fun getAllBySection(section: String): List<StoryEntity>
 
     @Query("DELETE FROM $STORY_TABLE_NAME")
     suspend fun clearAll()

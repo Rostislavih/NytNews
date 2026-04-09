@@ -2,16 +2,16 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "ac6283b64b3dc18d9a17184859feb814",
+    "identityHash": "4c8051f3c9758db1e272d2b1877404dc",
     "entities": [
       {
         "tableName": "stories",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `abstract` TEXT NOT NULL, `published_date` TEXT NOT NULL, `section` TEXT NOT NULL, `image_url` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`url` TEXT NOT NULL, `title` TEXT NOT NULL, `abstract` TEXT NOT NULL, `published_date` TEXT NOT NULL, `section` TEXT NOT NULL, `image_url` TEXT, PRIMARY KEY(`url`))",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -45,16 +45,16 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
+          "autoGenerate": false,
           "columnNames": [
-            "id"
+            "url"
           ]
         }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ac6283b64b3dc18d9a17184859feb814')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4c8051f3c9758db1e272d2b1877404dc')"
     ]
   }
 }

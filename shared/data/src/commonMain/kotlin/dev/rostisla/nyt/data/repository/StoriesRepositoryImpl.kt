@@ -30,6 +30,7 @@ internal class StoriesRepositoryImpl(
             response.results.lists.flatMap { list ->
                 list.books.map { book ->
                     Story(
+                        url = "book_${book.title}_${book.author}",
                         title = book.title,
                         abstract = "[${list.displayName}] ${book.description ?: ""}",
                         publishedDate = "Author: ${book.author ?: "Unknown"}"
@@ -42,8 +43,7 @@ internal class StoriesRepositoryImpl(
         }
 
         val entities = stories.map { it.toEntity(section) }
-        
-        dao.clearBySection(section.name)
+
         dao.insert(entities)
     }
 

@@ -6,6 +6,7 @@ import dev.rostisla.nyt.domain.model.Story
 
 internal fun StoryEntity.toStory(): Story {
     return Story(
+        url = this.url,
         title = this.title,
         abstract = this.abstract,
         publishedDate = this.publishedDate,
@@ -15,7 +16,7 @@ internal fun StoryEntity.toStory(): Story {
 
 internal fun Story.toEntity(section: StoriesSection): StoryEntity {
     return StoryEntity(
-        id = 0,
+        url = this.url,
         title = this.title,
         abstract = this.abstract,
         publishedDate = this.publishedDate,
