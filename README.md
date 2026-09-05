@@ -7,18 +7,6 @@
 ![Android](https://img.shields.io/badge/Android-24%2B-3DDC84?logo=android&logoColor=white)
 ![iOS](https://img.shields.io/badge/iOS-arm64-000000?logo=apple&logoColor=white)
 
-<!--
-СКРИНШОТЫ: положите 3-4 файла в docs/screenshots/ и раскомментируйте блок ниже.
-Нужны: лента новостей, переключение разделов, раздел Books, состояние загрузки/ошибки.
-
-## Скриншоты
-
-<p align="center">
-  <img src="docs/screenshots/feed.png" width="240" alt="Лента новостей">
-  <img src="docs/screenshots/sections.png" width="240" alt="Разделы">
-  <img src="docs/screenshots/books.png" width="240" alt="Книжные бестселлеры">
-</p>
--->
 
 ## Возможности
 
