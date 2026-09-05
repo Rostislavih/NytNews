@@ -11,6 +11,7 @@ kotlin {
         compileSdk = libs.versions.compileSdk.get().toInt()
         minSdk = libs.versions.minSdk.get().toInt()
         androidResources.enable = true
+        withHostTestBuilder { }.configure { }
     }
     listOf(
         iosArm64(),
@@ -37,6 +38,12 @@ kotlin {
                 implementation(libs.coil.ktor3)
 
                 implementation(projects.shared.domain)
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
     }

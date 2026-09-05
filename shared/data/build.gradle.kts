@@ -15,6 +15,7 @@ kotlin {
         namespace = "dev.rostisla.nyt.shared.data"
         compileSdk = libs.versions.compileSdk.get().toInt()
         minSdk = libs.versions.minSdk.get().toInt()
+        withHostTestBuilder { }.configure { }
     }
     listOf(
         iosArm64(),
@@ -34,6 +35,13 @@ kotlin {
                 implementation(libs.androidx.sqlite.bundled)
 
                 implementation(projects.shared.domain)
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.ktor.client.mock)
             }
         }
         androidMain {
