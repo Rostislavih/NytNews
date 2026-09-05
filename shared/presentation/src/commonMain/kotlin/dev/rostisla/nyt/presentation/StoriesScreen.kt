@@ -14,8 +14,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -27,20 +30,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleStartEffect
 import coil3.compose.AsyncImage
 import dev.rostisla.nyt.domain.model.StoriesSection
+import dev.rostisla.nyt.presentation.mapper.toMessageRes
+import dev.rostisla.nyt.presentation.mapper.toTitleRes
 import dev.rostisla.nyt.presentation.model.UiStory
 import dev.rostisla.nyt.presentation.state.StoriesState
 import news.shared.presentation.generated.resources.Res
+import news.shared.presentation.generated.resources.error_title
+import news.shared.presentation.generated.resources.loading_message
 import news.shared.presentation.generated.resources.screen_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -133,7 +138,7 @@ private fun SectionSelector(
                 modifier = Modifier.clickable { onSectionSelected(section) }
             ) {
                 Text(
-                    text = section.name,
+                    text = stringResource(section.toTitleRes()),
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                     style = MaterialTheme.typography.labelLarge,
                     color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
@@ -145,20 +150,46 @@ private fun SectionSelector(
 
 @Composable
 private fun ErrorContent(state: StoriesState.Error, modifier: Modifier) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+    CenteredMessage(modifier = modifier) {
         Text(
-            text = "Error\n\r${state.message}",
+            text = stringResource(Res.string.error_title),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.error,
+        )
+        Text(
+            text = stringResource(state.error.toMessageRes()),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.error,
         )
     }
 }
 
 @Composable
 private fun LoadingContent(modifier: Modifier) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        Text(text = "Loading")
+    CenteredMessage(modifier = modifier) {
+        CircularProgressIndicator()
+        Text(
+            text = stringResource(Res.string.loading_message),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+}
+
+/** Контейнер скроллится, иначе pull-to-refresh не срабатывает на экранах без списка. */
+@Composable
+private fun CenteredMessage(modifier: Modifier, content: @Composable () -> Unit) {
+    Box(
+        modifier = modifier.verticalScroll(rememberScrollState()),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            content()
+        }
     }
 }
 
@@ -198,7 +229,7 @@ private fun StoryCard(story: UiStory, modifier: Modifier = Modifier) {
                     contentScale = ContentScale.Crop
                 )
             }
-            
+
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -224,4 +255,3 @@ private fun StoryCard(story: UiStory, modifier: Modifier = Modifier) {
         }
     }
 }
-

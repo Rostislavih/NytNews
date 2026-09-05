@@ -1,0 +1,24 @@
+<resources>
+    <string name="screen_title">Новости NYT</string>
+
+    <string name="section_home">Главное</string>
+    <string name="section_arts">Искусство</string>
+    <string name="section_automobiles">Авто</string>
+    <string name="section_books">Книги</string>
+
+    <string name="loading_message">Загружаем новости…</string>
+
+    <string name="error_title">Не удалось загрузить новости</string>
+
+    <string name="error_no_internet">Нет подключения к интернету. Проверьте сеть и повторите попытку.</string>
+    <string name="error_timeout">Сервер NYT не ответил вовремя. Попробуйте ещё раз.</string>
+    <string name="error_api_key_missing">Не задан ключ NYT API. Добавьте nyt.api.key в local.properties и пересоберите приложение.</string>
+    <string name="error_unauthorized">Сервер отклонил ключ NYT API (401/403). Проверьте, что ключ действителен и активен.</string>
+    <string name="error_rate_limited">Превышен лимит запросов к NYT API (429). Подождите минуту и повторите.</string>
+    <string name="error_not_found">Раздел недоступен на сервере NYT (404).</string>
+    <string name="error_server">Сервер NYT временно недоступен (5xx). Попробуйте позже.</string>
+    <string name="error_bad_response">Не удалось разобрать ответ сервера. Возможно, изменился формат API.</string>
+    <string name="error_storage">Ошибка локальной базы данных. Не удалось прочитать сохранённые новости.</string>
+    <string name="error_no_data">Сервер NYT не вернул ни одной статьи для этого раздела, в кэше тоже пусто.</string>
+    <string name="error_unknown">Непредвиденная ошибка.</string>
+</resources>

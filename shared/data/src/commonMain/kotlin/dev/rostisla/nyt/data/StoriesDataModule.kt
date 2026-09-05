@@ -15,7 +15,7 @@ val storiesDataModule = module {
     single { getDatabase() }
     single { get<NytDatabase>().storyDao() }
     factory { NytStoriesApiImpl(get()) }.bind<NytStoriesApi>()
-    factory { StoriesRepositoryImpl(get(),get()) }.bind<StoriesRepository>()
+    factory { StoriesRepositoryImpl(get(), get(), NytConfig.API_KEY) }.bind<StoriesRepository>()
 }
 
 internal expect fun Scope.getDatabase(): NytDatabase

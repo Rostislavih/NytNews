@@ -1,3 +1,24 @@
 <resources>
     <string name="screen_title">NYT Stories</string>
+
+    <string name="section_home">Home</string>
+    <string name="section_arts">Arts</string>
+    <string name="section_automobiles">Automobiles</string>
+    <string name="section_books">Books</string>
+
+    <string name="loading_message">Loading stories…</string>
+
+    <string name="error_title">Failed to load stories</string>
+
+    <string name="error_no_internet">No internet connection. Check your network and try again.</string>
+    <string name="error_timeout">The NYT server took too long to respond. Try again.</string>
+    <string name="error_api_key_missing">The NYT API key is not set. Add nyt.api.key to local.properties and rebuild the app.</string>
+    <string name="error_unauthorized">The NYT API key was rejected (401/403). Check that the key is valid and active.</string>
+    <string name="error_rate_limited">Too many requests to the NYT API (429). Wait a minute and try again.</string>
+    <string name="error_not_found">This section is not available on the NYT server (404).</string>
+    <string name="error_server">The NYT server is temporarily unavailable (5xx). Try again later.</string>
+    <string name="error_bad_response">The server response could not be parsed. The API format may have changed.</string>
+    <string name="error_storage">Local database error. The saved stories could not be read.</string>
+    <string name="error_no_data">The NYT server returned no stories for this section, and nothing is cached.</string>
+    <string name="error_unknown">Unexpected error.</string>
 </resources>
